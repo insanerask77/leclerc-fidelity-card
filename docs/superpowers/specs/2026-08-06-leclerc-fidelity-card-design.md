@@ -44,16 +44,41 @@ Verificadas contra la API real el 2026-08-06:
 
 ## Riesgo principal
 
-Si las tarjetas físicas de E. Leclerc Andorra son EAN-13 —lo habitual en
-comercio— habrá que reemitir los mismos dígitos como **Code128**, porque la API
-no admite EAN-13. La mayoría de lectores de caja devuelven la misma cadena de
-dígitos con ambas simbologías, pero no todos: algunos TPV están configurados
-para aceptar solo EAN.
+**Confirmado el 2026-08-06 con una tarjeta real:** las tarjetas de E. Leclerc
+Andorra son **EAN-13**. Ejemplo verificado: `2953499220191` (prefijo 2, código
+interno de tienda; dígito de control válido).
 
-**Este riesgo no se cierra desde el código.** Hay que validarlo generando un
-pase con una tarjeta real y escaneándolo en una caja antes de publicar la app.
-Si el TPV lo rechaza, la única salida es que walletwallet.dev añada EAN-13, o
-cambiar de proveedor de pases.
+Hay que reemitir los mismos dígitos como **Code128**. Esto no es una limitación
+de walletwallet.dev: **Apple Wallet no soporta EAN-13 en ningún caso** — su
+`pass.json` solo admite `PKBarcodeFormatQR`, `PDF417`, `Aztec` y `Code128`. En
+iOS, Code128 es la única representación posible de un número de tarjeta, y es
+lo que hace el resto del sector.
+
+La mayoría de lectores de caja devuelven la misma cadena de dígitos con ambas
+simbologías, pero no todos: algunos TPV están configurados para aceptar solo
+EAN.
+
+**Este riesgo no se cierra desde el código.** Estado: se ha generado el pase de
+prueba `PROVA-CAIXA.pkpass` (número real, Code128) y está pendiente de
+escanearse en una caja. Si el TPV lo rechaza, ninguna app lo arregla: habría
+que cambiar de proveedor de pases y, aun así, iOS seguiría sin poder mostrar
+EAN-13.
+
+## Fiabilidad del escaneo
+
+Verificado el 2026-08-06 decodificando con ZXing una foto real de la tarjeta:
+
+| Variante de la imagen | Resultado |
+|---|---|
+| Original (foto de móvil) | `EAN_13` → `2953499220191` |
+| Escala de grises + normalizada | `EAN_13` → `2953499220191` |
+| Reducida a 800 px de ancho | `EAN_13` → `2953499220191` |
+| **Rotada 90°** | **no lee** |
+
+Conclusión: ZXing es suficiente, pero es ciego a la orientación. La ruta de
+«subir foto» debe reintentar la decodificación a 0°, 90°, 180° y 270° antes de
+darse por vencida. La ruta de cámara en vivo no lo necesita: el usuario encuadra
+en tiempo real.
 
 ## Arquitectura
 
