@@ -116,6 +116,16 @@ test automático la cubre.
   pedir una clave nueva a walletwallet.dev y usar esa (nunca la antigua) en
   la configuración de producción.
 
+  Además, esa misma clave quedó escrita en texto plano en el historial de
+  git local (estaba en un documento de especificación y ya se ha corregido
+  en un commit posterior, pero el valor original sigue vivo en el
+  historial). Este repositorio no tiene remoto configurado, así que la
+  clave no ha salido de esta máquina; aun así, si en algún momento se
+  publica este repositorio (se añade un remoto, se sube a GitHub, etc.),
+  hay que **purgarla del historial primero** (por ejemplo con `git filter-repo`
+  o `BFG Repo-Cleaner`), no basta con que el fichero actual ya no la
+  contenga.
+
 ## Despliegue
 
 El despliegue a Vercel (enlazar el proyecto, configurar la variable de
