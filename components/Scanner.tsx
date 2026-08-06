@@ -56,6 +56,8 @@ export default function Scanner({ dict, onDetected }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const controlsRef = useRef<{ stop: () => void } | null>(null);
+  const procesandoRef = useRef(false);
+  const montadoRef = useRef(true);
 
   /** Punto único de salida: valida, y si el código es raro pide confirmación. */
   const aceptar = useCallback(
@@ -75,6 +77,15 @@ export default function Scanner({ dict, onDetected }: Props) {
     },
     [dict, onDetected],
   );
+
+  // Se dispara al desmontar: procesarFoto lo consulta tras cada await para no
+  // tocar estado ni llamar a onDetected sobre un componente que ya no existe.
+  useEffect(() => {
+    montadoRef.current = true;
+    return () => {
+      montadoRef.current = false;
+    };
+  }, []);
 
   // Cámara en vivo
   useEffect(() => {
@@ -120,34 +131,55 @@ export default function Scanner({ dict, onDetected }: Props) {
    */
   const procesarFoto = useCallback(
     async (file: File) => {
+      // Guarda de reentrada: si el usuario elige otra foto mientras esta se
+      // procesa, la segunda se ignora en vez de correr en paralelo.
+      if (procesandoRef.current) return;
+      procesandoRef.current = true;
       setError(null);
-      const bitmap = await createImageBitmap(file);
-      const { lector, nombreFormato } = await crearLector();
 
-      for (const grados of [0, 90, 180, 270]) {
-        const vertical = grados % 180 !== 0;
-        const w = vertical ? bitmap.height : bitmap.width;
-        const h = vertical ? bitmap.width : bitmap.height;
+      let bitmap: ImageBitmap | null = null;
+      try {
+        // createImageBitmap rechaza con HEIC, JPEG corrupto o truncado.
+        bitmap = await createImageBitmap(file);
+        const { lector, nombreFormato } = await crearLector();
 
-        const canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext('2d')!;
-        ctx.translate(w / 2, h / 2);
-        ctx.rotate((grados * Math.PI) / 180);
-        ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+        // ZXing es ciego a la orientacion: girada 90 grados no lee nada.
+        for (const grados of [0, 90, 180, 270]) {
+          const vertical = grados % 180 !== 0;
+          const w = vertical ? bitmap.height : bitmap.width;
+          const h = vertical ? bitmap.width : bitmap.height;
 
-        try {
-          const r = lector.decodeFromCanvas(canvas);
-          aceptar(r.getText(), nombreFormato(r.getBarcodeFormat()));
-          return;
-        } catch {
-          // probamos la siguiente rotación
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d')!;
+          ctx.translate(w / 2, h / 2);
+          ctx.rotate((grados * Math.PI) / 180);
+          ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
+
+          try {
+            const r = lector.decodeFromCanvas(canvas);
+            if (!montadoRef.current) return;
+            aceptar(r.getText(), nombreFormato(r.getBarcodeFormat()));
+            return;
+          } catch {
+            // probamos la siguiente rotacion
+          }
         }
-      }
 
-      setError(dict.ui.errorDecode);
-      setModo('manual');
+        if (!montadoRef.current) return;
+        setError(dict.ui.errorDecode);
+        setModo('manual');
+      } catch {
+        // La imagen no se pudo ni abrir. Antes esto dejaba al usuario
+        // sin mensaje y sin salida.
+        if (!montadoRef.current) return;
+        setError(dict.ui.errorDecode);
+        setModo('manual');
+      } finally {
+        bitmap?.close();
+        procesandoRef.current = false;
+      }
     },
     [aceptar, dict],
   );
@@ -245,6 +277,7 @@ export default function Scanner({ dict, onDetected }: Props) {
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
+          e.target.value = '';
           if (f) void procesarFoto(f);
         }}
       />
