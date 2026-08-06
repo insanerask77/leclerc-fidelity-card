@@ -15,10 +15,10 @@ export default function PassPreview({ dict, name, barcodeValue }: Props) {
       </div>
 
       <div className="px-5 pb-4 pt-6">
-        <p className="text-xs uppercase tracking-wide text-white/60">
+        <p className="text-xs uppercase tracking-wide text-white/70">
           {dict.pass.title}
         </p>
-        <p className="mt-3 text-xs uppercase tracking-wide text-white/60">
+        <p className="mt-3 text-xs uppercase tracking-wide text-white/70">
           {dict.pass.nameLabel}
         </p>
         <p className="truncate text-lg font-medium">{name || '—'}</p>
@@ -34,7 +34,7 @@ export default function PassPreview({ dict, name, barcodeValue }: Props) {
             />
           ))}
         </div>
-        <p className="mt-2 font-mono text-sm tracking-[0.2em] text-black">
+        <p className="mt-2 break-all font-mono text-sm tracking-[0.2em] text-black">
           {barcodeValue}
         </p>
       </div>
