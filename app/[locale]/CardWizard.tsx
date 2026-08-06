@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Scanner from '@/components/Scanner';
 import PassPreview from '@/components/PassPreview';
 import ResultStep from '@/components/ResultStep';
@@ -16,8 +16,13 @@ export default function CardWizard({ dict, locale }: { dict: Dictionary; locale:
   const [error, setError] = useState<string | null>(null);
   const [resultado, setResultado] = useState<Resultado | null>(null);
 
+  // Identifica la peticion vigente. Al cambiar de codigo o volver atras se
+  // incrementa, y cualquier respuesta anterior queda invalidada.
+  const peticionRef = useRef(0);
+
   async function generar() {
     if (!barcode || !name.trim()) return;
+    const idPeticion = ++peticionRef.current;
     setCargando(true);
     setError(null);
     try {
@@ -31,13 +36,16 @@ export default function CardWizard({ dict, locale }: { dict: Dictionary; locale:
           locale,
         }),
       });
+      // El usuario volvio atras o cambio de codigo: esta respuesta ya no vale.
+      if (idPeticion !== peticionRef.current) return;
       if (!res.ok) throw new Error(String(res.status));
       setResultado(await res.json());
     } catch {
-      // El nombre y el código se conservan: reintentar no obliga a reescanear.
+      if (idPeticion !== peticionRef.current) return;
+      // El nombre y el codigo se conservan: reintentar no obliga a reescanear.
       setError(dict.ui.errorNetwork);
     } finally {
-      setCargando(false);
+      if (idPeticion === peticionRef.current) setCargando(false);
     }
   }
 
@@ -70,7 +78,12 @@ export default function CardWizard({ dict, locale }: { dict: Dictionary; locale:
       <div className="flex gap-3">
         <button
           className="rounded-xl border border-zinc-300 px-5 py-4"
-          onClick={() => setBarcode(null)}
+          onClick={() => {
+            // Invalida cualquier peticion en vuelo antes de soltar el codigo.
+            peticionRef.current++;
+            setCargando(false);
+            setBarcode(null);
+          }}
         >
           {dict.ui.back}
         </button>
