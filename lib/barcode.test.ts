@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { normalizeBarcode, isSuspicious, BarcodeError } from './barcode';
+import {
+  normalizeBarcode,
+  isSuspicious,
+  BarcodeError,
+  NormalizedBarcode,
+  API_FORMATS,
+} from './barcode';
 
 describe('normalizeBarcode', () => {
   it('reemite EAN-13 como Code128 conservando los dígitos', () => {
@@ -31,23 +37,27 @@ describe('normalizeBarcode', () => {
   });
 
   it('nunca devuelve un formato que la API rechace', () => {
-    const permitidos = ['QR', 'PDF417', 'Aztec', 'Code128'];
-    // Incluye formatos desconocidos y las claves heredadas de Object.prototype
-    // que podrían ser accesibles si usáramos un objeto literal con acceso [].
-    for (const f of [
+    const permitidos: string[] = [...API_FORMATS];
+    const entradas = [
       'EAN_13', 'DATA_MATRIX', 'MAXICODE', 'cualquier_cosa',
+      // claves heredadas de Object.prototype: el acceso con corchetes las
+      // resolvía a valores truthy y colaba formatos invalidos
       'constructor', 'toString', 'hasOwnProperty', 'valueOf',
-      '__proto__', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString'
-    ]) {
+      '__proto__', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString',
+    ];
+
+    for (const f of entradas) {
+      let salida: NormalizedBarcode;
       try {
-        const result = normalizeBarcode('12345678', f);
-        // Refuerza la aserción: debe ser string Y estar en permitidos
-        expect(typeof result.format).toBe('string');
-        expect(permitidos).toContain(result.format);
-      } catch {
-        // Rechazar también es válido para formatos desconocidos
+        salida = normalizeBarcode('12345678', f);
+      } catch (e) {
+        // Rechazar es una salida valida, pero solo si es NUESTRO error.
+        expect(e, f).toBeInstanceOf(BarcodeError);
         continue;
       }
+      // Fuera del try: un fallo aqui no puede confundirse con un rechazo.
+      expect(typeof salida.format, f).toBe('string');
+      expect(permitidos, f).toContain(salida.format);
     }
   });
 
