@@ -55,4 +55,25 @@ describe('POST /api/download', () => {
     const enorme = Buffer.alloc(600_000, 1).toString('base64');
     expect((await POST(form({ applePass: enorme }))).status).toBe(400);
   });
+
+  it('devuelve 400 si la peticion no lleva Content-Type', async () => {
+    const res = await POST(
+      new Request('http://localhost/api/download', {
+        method: 'POST',
+        body: 'applePass=' + PKPASS_B64,
+      }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it('devuelve 400 si el cuerpo no es el multipart que anuncia', async () => {
+    const res = await POST(
+      new Request('http://localhost/api/download', {
+        method: 'POST',
+        headers: { 'content-type': 'multipart/form-data; boundary=----X' },
+        body: 'esto no es multipart',
+      }),
+    );
+    expect(res.status).toBe(400);
+  });
 });

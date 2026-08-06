@@ -7,7 +7,13 @@ function mal() {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  const form = await request.formData();
+  let form: FormData;
+  try {
+    form = await request.formData();
+  } catch {
+    // Content-Type ausente o cuerpo no parseable: entrada malformada, no un fallo nuestro.
+    return mal();
+  }
   const b64 = form.get('applePass');
 
   if (typeof b64 !== 'string' || b64.length === 0) return mal();
