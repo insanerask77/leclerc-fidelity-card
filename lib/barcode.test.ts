@@ -32,14 +32,22 @@ describe('normalizeBarcode', () => {
 
   it('nunca devuelve un formato que la API rechace', () => {
     const permitidos = ['QR', 'PDF417', 'Aztec', 'Code128'];
-    for (const f of ['EAN_13', 'DATA_MATRIX', 'MAXICODE', 'cualquier_cosa']) {
-      let salida: string;
+    // Incluye formatos desconocidos y las claves heredadas de Object.prototype
+    // que podrían ser accesibles si usáramos un objeto literal con acceso [].
+    for (const f of [
+      'EAN_13', 'DATA_MATRIX', 'MAXICODE', 'cualquier_cosa',
+      'constructor', 'toString', 'hasOwnProperty', 'valueOf',
+      '__proto__', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString'
+    ]) {
       try {
-        salida = normalizeBarcode('12345678', f).format;
+        const result = normalizeBarcode('12345678', f);
+        // Refuerza la aserción: debe ser string Y estar en permitidos
+        expect(typeof result.format).toBe('string');
+        expect(permitidos).toContain(result.format);
       } catch {
-        continue; // rechazar también es válido
+        // Rechazar también es válido para formatos desconocidos
+        continue;
       }
-      expect(permitidos).toContain(salida);
     }
   });
 

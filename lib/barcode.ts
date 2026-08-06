@@ -33,28 +33,37 @@ const MIN_LENGTH = 4;
 const MAX_LENGTH = 80;
 const SUSPICIOUS_BELOW = 6;
 
-/** Nombres de ZXing (y de la propia API) → formato aceptado por la API. */
-const FORMAT_MAP: Record<string, ApiBarcodeFormat> = {
+/**
+ * Mapa de nombres de ZXing (y de la propia API) → formato aceptado por la API.
+ *
+ * IMPORTANTE: Usamos Map en lugar de un objeto literal porque los accesos con
+ * corchetes a objetos consultan la cadena de prototipos. Las claves heredadas de
+ * Object.prototype (como 'constructor', 'toString', '__proto__', etc.) devolverían
+ * valores truthy (funciones u objetos) que pasarían la validación de formato pero
+ * no son ninguno de los cuatro permitidos. Esto es crítico porque en la Tarea 5 el
+ * formato llega desde el cuerpo de una petición POST controlada por el cliente.
+ */
+const FORMAT_MAP = new Map<string, ApiBarcodeFormat>([
   // 1D: todos colapsan a Code128
-  EAN_13: 'Code128',
-  EAN_8: 'Code128',
-  UPC_A: 'Code128',
-  UPC_E: 'Code128',
-  CODE_39: 'Code128',
-  CODE_93: 'Code128',
-  CODE_128: 'Code128',
-  ITF: 'Code128',
-  CODABAR: 'Code128',
+  ['EAN_13', 'Code128'],
+  ['EAN_8', 'Code128'],
+  ['UPC_A', 'Code128'],
+  ['UPC_E', 'Code128'],
+  ['CODE_39', 'Code128'],
+  ['CODE_93', 'Code128'],
+  ['CODE_128', 'Code128'],
+  ['ITF', 'Code128'],
+  ['CODABAR', 'Code128'],
   // 2D: se conservan
-  QR_CODE: 'QR',
-  PDF_417: 'PDF417',
-  AZTEC: 'Aztec',
+  ['QR_CODE', 'QR'],
+  ['PDF_417', 'PDF417'],
+  ['AZTEC', 'Aztec'],
   // nombres que ya usa la API, por si llegan tal cual
-  Code128: 'Code128',
-  QR: 'QR',
-  PDF417: 'PDF417',
-  Aztec: 'Aztec',
-};
+  ['Code128', 'Code128'],
+  ['QR', 'QR'],
+  ['PDF417', 'PDF417'],
+  ['Aztec', 'Aztec'],
+]);
 
 /** Code128 solo codifica ASCII imprimible (32–126). */
 function isEncodable(value: string): boolean {
@@ -78,7 +87,7 @@ export function normalizeBarcode(
   if (value.length > MAX_LENGTH) throw new BarcodeError('too_long');
   if (!isEncodable(value)) throw new BarcodeError('invalid_chars');
 
-  const format = FORMAT_MAP[zxingFormat];
+  const format = FORMAT_MAP.get(zxingFormat);
   if (!format) throw new BarcodeError('unsupported_format');
 
   return { value, format };
