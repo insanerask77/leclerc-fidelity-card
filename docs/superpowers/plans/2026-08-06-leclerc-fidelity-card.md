@@ -759,10 +759,10 @@ describe('buildPassPayload', () => {
     expect(p.barcodeFormat).toBe('Code128');
   });
 
-  it('el formato siempre es uno de los que acepta la API', () => {
+  it('pasa el formato tal cual, sin reinterpretarlo', () => {
     for (const f of API_FORMATS) {
       const p = buildPassPayload({ ...base, barcode: { value: '12345678', format: f } });
-      expect(API_FORMATS).toContain(p.barcodeFormat as string);
+      expect(p.barcodeFormat, f).toBe(f);
     }
   });
 
