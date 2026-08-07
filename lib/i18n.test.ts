@@ -27,8 +27,8 @@ describe('i18n', () => {
   });
 
   it('los campos del pase están traducidos, no copiados del catalán', () => {
-    expect(getDictionary('es').pass.title).toBe('Tarjeta de fidelización');
-    expect(getDictionary('fr').pass.title).toBe('Carte de fidélité');
+    expect(getDictionary('es').pass.numberLabel).toBe('Número');
+    expect(getDictionary('fr').pass.numberLabel).toBe('Numéro');
     expect(getDictionary('en').pass.nameLabel).toBe('Name');
   });
 });

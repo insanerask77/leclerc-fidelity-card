@@ -33,8 +33,13 @@ export function buildPassPayload(input: PassInput): Record<string, unknown> {
     logoURL: logoDataUri(),
     iconURL: iconDataUri(),
     stripURL: stripDataUri(),
-    primaryFields: [{ value: dict.pass.title }],
-    secondaryFields: [{ label: dict.pass.nameLabel, value: name }],
+    // Sin primaryFields: la banda ya lleva la marca y el texto sobraba.
+    // El numero va en texto ademas de en el codigo de barras porque algunas
+    // cajas no tienen lector y lo teclean a mano.
+    secondaryFields: [
+      { label: dict.pass.nameLabel, value: name },
+      { label: dict.pass.numberLabel, value: input.barcode.value },
+    ],
     backFields: [{ label: 'Notifications', value: ' ', changeMessage: '%@' }],
   };
 }

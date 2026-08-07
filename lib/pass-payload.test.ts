@@ -31,17 +31,29 @@ describe('buildPassPayload', () => {
     }
   });
 
-  it('traduce los campos del pase según el idioma', () => {
-    expect(JSON.stringify(buildPassPayload({ ...base, locale: 'es' })))
-      .toContain('Tarjeta de fidelización');
-    expect(JSON.stringify(buildPassPayload({ ...base, locale: 'fr' })))
-      .toContain('Carte de fidélité');
+  it('traduce las etiquetas del pase según el idioma', () => {
+    const etiquetas = (l: (typeof LOCALES)[number]) =>
+      (buildPassPayload({ ...base, locale: l }) as {
+        secondaryFields: { label: string }[];
+      }).secondaryFields.map((f) => f.label);
+
+    expect(etiquetas('es')).toEqual(['Nombre', 'Número']);
+    expect(etiquetas('fr')).toEqual(['Nom', 'Numéro']);
+    expect(etiquetas('en')).toEqual(['Name', 'Number']);
   });
 
   it('pone el nombre en el campo secundario', () => {
     const p = buildPassPayload(base) as { secondaryFields: { label: string; value: string }[] };
     expect(p.secondaryFields[0].value).toBe('Jordi Puig');
     expect(p.secondaryFields[0].label).toBe('Nom');
+  });
+
+  // La API ignora el altText del código de barras, así que el número solo se
+  // puede leer si va además como texto. Hay cajas sin lector que lo teclean.
+  it('repite el número como texto legible', () => {
+    const p = buildPassPayload(base) as { secondaryFields: { label: string; value: string }[] };
+    expect(p.secondaryFields[1].value).toBe('2953499220191');
+    expect(p.secondaryFields[1].label).toBe('Número');
   });
 
   it('recorta los nombres demasiado largos', () => {

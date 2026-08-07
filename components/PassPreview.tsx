@@ -25,14 +25,22 @@ export default function PassPreview({ dict, name, barcodeValue }: Props) {
         <span className="block font-bold">Preu baix</span>
       </p>
 
-      <div className="px-5 pb-4 pt-5">
-        <p className="text-sm font-semibold uppercase tracking-wide">
-          {dict.pass.title}
-        </p>
-        <p className="mt-3 text-sm font-semibold uppercase tracking-wide opacity-90">
-          {dict.pass.nameLabel}
-        </p>
-        <p className="truncate text-lg font-medium">{name || '—'}</p>
+      {/* Los dos campos secundarios del pase, en el mismo orden y en columnas
+          como los coloca Wallet. El numero va tambien en texto porque hay
+          cajas sin lector que lo teclean a mano. */}
+      <div className="flex items-start justify-between gap-4 px-5 pb-4 pt-5">
+        <div className="min-w-0">
+          <p className="text-sm font-semibold uppercase tracking-wide opacity-90">
+            {dict.pass.nameLabel}
+          </p>
+          <p className="truncate text-lg font-medium">{name || '—'}</p>
+        </div>
+        <div className="min-w-0 text-right">
+          <p className="text-sm font-semibold uppercase tracking-wide opacity-90">
+            {dict.pass.numberLabel}
+          </p>
+          <p className="truncate font-mono text-lg font-medium">{barcodeValue}</p>
+        </div>
       </div>
 
       <div className="bg-white px-5 py-4 text-center">
@@ -45,9 +53,6 @@ export default function PassPreview({ dict, name, barcodeValue }: Props) {
             />
           ))}
         </div>
-        <p className="mt-2 break-all font-mono text-sm tracking-[0.2em] text-black">
-          {barcodeValue}
-        </p>
       </div>
     </div>
   );

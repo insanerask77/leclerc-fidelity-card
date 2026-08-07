@@ -9,8 +9,8 @@ export function isLocale(value: string): value is Locale {
 export type Dictionary = {
   /** Textos que van dentro del pase de monedero. */
   pass: {
-    title: string;
     nameLabel: string;
+    numberLabel: string;
   };
   /** Textos de la interfaz web. */
   ui: {
@@ -47,7 +47,7 @@ export type Dictionary = {
 };
 
 const ca: Dictionary = {
-  pass: { title: 'Targeta de fidelitat', nameLabel: 'Nom' },
+  pass: { nameLabel: 'Nom', numberLabel: 'Número' },
   ui: {
     appTitle: 'Targeta de fidelitat',
     tagline: 'Porta la teva targeta al mòbil',
@@ -82,7 +82,7 @@ const ca: Dictionary = {
 };
 
 const es: Dictionary = {
-  pass: { title: 'Tarjeta de fidelización', nameLabel: 'Nombre' },
+  pass: { nameLabel: 'Nombre', numberLabel: 'Número' },
   ui: {
     appTitle: 'Tarjeta de fidelización',
     tagline: 'Lleva tu tarjeta en el móvil',
@@ -117,7 +117,7 @@ const es: Dictionary = {
 };
 
 const fr: Dictionary = {
-  pass: { title: 'Carte de fidélité', nameLabel: 'Nom' },
+  pass: { nameLabel: 'Nom', numberLabel: 'Numéro' },
   ui: {
     appTitle: 'Carte de fidélité',
     tagline: 'Emportez votre carte sur votre mobile',
@@ -152,7 +152,7 @@ const fr: Dictionary = {
 };
 
 const en: Dictionary = {
-  pass: { title: 'Loyalty card', nameLabel: 'Name' },
+  pass: { nameLabel: 'Name', numberLabel: 'Number' },
   ui: {
     appTitle: 'Loyalty card',
     tagline: 'Carry your card on your phone',
