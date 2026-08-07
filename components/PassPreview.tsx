@@ -9,16 +9,27 @@ type Props = {
 /** Maqueta de cómo se verá el pase. No es el pase real, solo una previsualización. */
 export default function PassPreview({ dict, name, barcodeValue }: Props) {
   return (
-    <div className="mx-auto w-full max-w-xs overflow-hidden rounded-2xl bg-[#1e40af] text-white shadow-lg">
+    <div className="mx-auto w-full max-w-xs overflow-hidden rounded-2xl bg-leclerc-orange text-white shadow-lg">
       <div className="flex items-center justify-between px-5 pt-5">
         <span className="text-lg font-bold tracking-tight">E.Leclerc</span>
       </div>
 
-      <div className="px-5 pb-4 pt-6">
-        <p className="text-xs uppercase tracking-wide text-white/70">
+      {/* Bloque de palabras de la tarjeta fisica. Decorativo: el lector de
+          pantalla ya tiene el titulo y el nombre justo debajo. */}
+      <p
+        className="marca-palabras px-5 pt-4 text-[1.35rem] font-extrabold uppercase opacity-95"
+        aria-hidden
+      >
+        Qualitat
+        <span className="block font-light italic">Innovació</span>
+        <span className="block font-bold">Preu baix</span>
+      </p>
+
+      <div className="px-5 pb-4 pt-5">
+        <p className="text-sm font-semibold uppercase tracking-wide">
           {dict.pass.title}
         </p>
-        <p className="mt-3 text-xs uppercase tracking-wide text-white/70">
+        <p className="mt-3 text-sm font-semibold uppercase tracking-wide opacity-90">
           {dict.pass.nameLabel}
         </p>
         <p className="truncate text-lg font-medium">{name || '—'}</p>

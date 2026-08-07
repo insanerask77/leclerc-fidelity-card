@@ -187,6 +187,29 @@ Ningún error deja al usuario sin salida.
   ambos monederos, y **escanear el pase resultante en una caja de E. Leclerc**
   para cerrar el riesgo de la simbología.
 
+## Identidad visual
+
+Tomada de la tarjeta física de E. Leclerc Andorra (naranja con tipografía de
+display blanca y el wordmark azul):
+
+| Color | Hex | Blanco encima | Uso |
+|---|---|---|---|
+| Naranja Leclerc | `#e5760b` | 3.03:1 | Superficies de marca y texto de display |
+| Azul Leclerc | `#0f6cb1` | 5.53:1 | Botones y cualquier texto pequeño |
+
+El naranja con blanco cumple WCAG AA **solo para texto grande** (≥24 px, o
+≥18.66 px en negrita). Por eso las zonas naranjas llevan únicamente tipografía
+de display, y todo el contenido interactivo va sobre blanco. Los botones usan
+el azul, que pasa AA a cualquier tamaño.
+
+Sin tema oscuro: la identidad es naranja y blanco, y una inversión automática
+la rompe.
+
+**Limitación del proveedor:** la API deriva ella misma `foregroundColor` y
+`labelColor` del pase e ignora los que se le envíen. Con fondo naranja usa
+negro para los valores (6.93:1, correcto) pero gris para las etiquetas
+(2.70:1, por debajo de AA). No es corregible desde nuestro lado.
+
 ## Criterios de éxito
 
 1. Un cliente con la tarjeta física en la mano tiene el pase en el monedero en

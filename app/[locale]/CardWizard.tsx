@@ -88,7 +88,7 @@ export default function CardWizard({ dict, locale }: { dict: Dictionary; locale:
           {dict.ui.back}
         </button>
         <button
-          className="flex-1 rounded-xl bg-[#1e40af] px-4 py-4 text-white disabled:opacity-40"
+          className="flex-1 rounded-xl bg-leclerc-blue px-4 py-4 text-white disabled:opacity-40"
           disabled={!name.trim() || cargando}
           onClick={() => void generar()}
         >
