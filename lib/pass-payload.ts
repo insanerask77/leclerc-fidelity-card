@@ -28,6 +28,9 @@ export function buildPassPayload(input: PassInput): Record<string, unknown> {
     barcodeFormat: input.barcode.format,
     logoText: LOGO_TEXT,
     organizationName: ORG_NAME,
+    // Es el texto que lee VoiceOver al abrir el pase. Sin esto, la API usa
+    // logoText, y el usuario solo oiria "E.Leclerc".
+    description: `${dict.ui.appTitle} ${ORG_NAME}`,
     colorPreset: COLOR_PRESET,
     color: BRAND_COLOR,
     logoURL: logoDataUri(),

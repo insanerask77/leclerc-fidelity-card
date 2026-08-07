@@ -27,11 +27,13 @@ let logoCache: string | null = null;
 let iconCache: string | null = null;
 let stripCache: string | null = null;
 
+/** 160x160, el tamano que recomienda la documentacion de walletwallet.dev. */
 export function logoDataUri(): string {
   logoCache ??= loadDataUri('logo.png');
   return logoCache;
 }
 
+/** 120x120, el tamano que recomienda la documentacion de walletwallet.dev. */
 export function iconDataUri(): string {
   iconCache ??= loadDataUri('icon.png');
   return iconCache;
@@ -42,6 +44,9 @@ export function iconDataUri(): string {
  * hace que el pase se parezca a la tarjeta fisica. Apple la dibuja a 375x144
  * pt; el fichero esta a 750x288 (@2x) y cuantizado a 8 colores, porque son
  * colores planos y a @3x el pase se pasaba del limite de /api/download.
+ *
+ * La documentacion recomienda 1080x360. Para llegar ahi sin escalar y perder
+ * nitidez hace falta el original de la banda, que no esta en el repo.
  */
 export function stripDataUri(): string {
   stripCache ??= loadDataUri('strip.png');
