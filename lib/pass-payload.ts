@@ -7,6 +7,7 @@ import {
   LOGO_TEXT,
   logoDataUri,
   iconDataUri,
+  stripDataUri,
 } from './brand';
 
 /** Lo que cabe en el campo secundario del pase sin que se corte visualmente. */
@@ -31,6 +32,7 @@ export function buildPassPayload(input: PassInput): Record<string, unknown> {
     color: BRAND_COLOR,
     logoURL: logoDataUri(),
     iconURL: iconDataUri(),
+    stripURL: stripDataUri(),
     primaryFields: [{ value: dict.pass.title }],
     secondaryFields: [{ label: dict.pass.nameLabel, value: name }],
     backFields: [{ label: 'Notifications', value: ' ', changeMessage: '%@' }],

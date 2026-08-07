@@ -60,7 +60,7 @@ describe('buildPassPayload', () => {
 
   it('incluye la marca de la tienda', () => {
     const p = buildPassPayload(base);
-    expect(p.organizationName).toBe('E. Leclerc Andorra');
+    expect(p.organizationName).toBe('E.Leclerc Andorra');
     expect(p.logoText).toBe('E.Leclerc');
   });
 
@@ -71,6 +71,13 @@ describe('buildPassPayload', () => {
     // un PNG real ocupa bastante más que unos pocos cientos de bytes
     expect(p.logoURL.length).toBeGreaterThan(1000);
     expect(p.iconURL.length).toBeGreaterThan(1000);
+  });
+
+  it('adjunta la banda como data URI', () => {
+    const p = buildPassPayload(base) as { stripURL: string };
+    expect(p.stripURL.startsWith('data:image/png;base64,')).toBe(true);
+    // la banda es la imagen mas pesada del pase: si baja de esto, esta truncada
+    expect(p.stripURL.length).toBeGreaterThan(5000);
   });
 
   it('no filtra la clave de la API', () => {

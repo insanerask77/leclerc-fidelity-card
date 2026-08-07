@@ -3,13 +3,13 @@
 /*
  * Paleta tomada de la tarjeta fisica de E. Leclerc Andorra.
  *
- * El naranja sobre blanco da 3.03:1. Eso cumple WCAG AA solo para texto grande
+ * El naranja sobre blanco da 3.11:1. Eso cumple WCAG AA solo para texto grande
  * (>=24px, o >=18.66px en negrita), asi que el naranja se usa como superficie
  * de marca con tipografia de display, nunca debajo de texto pequeno.
  * Para eso esta el azul: 5.53:1 con blanco, valido a cualquier tamano.
  */
 :root {
-  --leclerc-orange: #e5760b;
+  --leclerc-orange: #e07608;
   --leclerc-orange-dark: #c4640a;
   --leclerc-blue: #0f6cb1;
   --leclerc-blue-dark: #0c5a94;

@@ -194,7 +194,7 @@ display blanca y el wordmark azul):
 
 | Color | Hex | Blanco encima | Uso |
 |---|---|---|---|
-| Naranja Leclerc | `#e5760b` | 3.03:1 | Superficies de marca y texto de display |
+| Naranja Leclerc | `#e07608` | 3.11:1 | Superficies de marca y texto de display |
 | Azul Leclerc | `#0f6cb1` | 5.53:1 | Botones y cualquier texto pequeño |
 
 El naranja con blanco cumple WCAG AA **solo para texto grande** (≥24 px, o

@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   // los PNG podrian no viajar al bundle serverless y /api/pass fallaria en
   // produccion sin dar ningun aviso en local ni en los tests.
   outputFileTracingIncludes: {
-    "/api/pass": ["./assets/logo.png", "./assets/icon.png"],
+    "/api/pass": ["./assets/logo.png", "./assets/icon.png", "./assets/strip.png"],
   },
 };
 

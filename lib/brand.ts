@@ -7,9 +7,9 @@ import path from 'node:path';
  * código fuente: así el diff se mantiene legible y el fichero no engorda.
  */
 
-export const BRAND_COLOR = '#e5760b';
+export const BRAND_COLOR = '#e07608';
 export const COLOR_PRESET = 'orange';
-export const ORG_NAME = 'E. Leclerc Andorra';
+export const ORG_NAME = 'E.Leclerc Andorra';
 export const LOGO_TEXT = 'E.Leclerc';
 
 function loadDataUri(file: string): string {
@@ -25,6 +25,7 @@ function loadDataUri(file: string): string {
 
 let logoCache: string | null = null;
 let iconCache: string | null = null;
+let stripCache: string | null = null;
 
 export function logoDataUri(): string {
   logoCache ??= loadDataUri('logo.png');
@@ -34,4 +35,15 @@ export function logoDataUri(): string {
 export function iconDataUri(): string {
   iconCache ??= loadDataUri('icon.png');
   return iconCache;
+}
+
+/**
+ * Banda que ocupa el ancho del pase, encima del codigo de barras. Es lo que
+ * hace que el pase se parezca a la tarjeta fisica. Apple la dibuja a 375x144
+ * pt; el fichero esta a 750x288 (@2x) y cuantizado a 8 colores, porque son
+ * colores planos y a @3x el pase se pasaba del limite de /api/download.
+ */
+export function stripDataUri(): string {
+  stripCache ??= loadDataUri('strip.png');
+  return stripCache;
 }
