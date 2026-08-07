@@ -1,0 +1,540 @@
+<meta charset="utf-8">
+<title>Proposta · La targeta de fidelitat al moneder del mòbil</title>
+
+<style>
+  /* ---- Tokens -------------------------------------------------------- */
+  :root {
+    --ground:   #fbfbfc;
+    --surface:  #ffffff;
+    --ink:      #14181d;
+    --ink-soft: #5a636e;
+    --hair:     #dde2e8;
+    --hair-2:   #eef1f4;
+    --accent:   #0f6cb1;   /* el blau del wordmark d'E.Leclerc */
+    --accent-w: #e8f1f8;
+    --card:     #e07608;   /* el taronja, reservat NOMES a la targeta */
+    --card-2:   #c4640a;
+    --ok:       #1d7a4c;
+
+    --display: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+    --measure: 34rem;
+    --pad: clamp(1.25rem, 5vw, 3rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground:   #0e1216;
+      --surface:  #151b21;
+      --ink:      #e9edf1;
+      --ink-soft: #98a2ad;
+      --hair:     #27303a;
+      --hair-2:   #1d242b;
+      --accent:   #5aa9e0;
+      --accent-w: #16242f;
+      --card:     #d9760f;
+      --card-2:   #b7620b;
+      --ok:       #4cb383;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground:#0e1216; --surface:#151b21; --ink:#e9edf1; --ink-soft:#98a2ad;
+    --hair:#27303a; --hair-2:#1d242b; --accent:#5aa9e0; --accent-w:#16242f;
+    --card:#d9760f; --card-2:#b7620b; --ok:#4cb383;
+  }
+  :root[data-theme="light"] {
+    --ground:#fbfbfc; --surface:#ffffff; --ink:#14181d; --ink-soft:#5a636e;
+    --hair:#dde2e8; --hair-2:#eef1f4; --accent:#0f6cb1; --accent-w:#e8f1f8;
+    --card:#e07608; --card-2:#c4640a; --ok:#1d7a4c;
+  }
+
+  /* ---- Base ---------------------------------------------------------- */
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: calc(var(--measure) + var(--pad) * 2);
+    margin: 0 auto;
+    padding: var(--pad);
+    display: flex;
+    flex-direction: column;
+    gap: 3.25rem;
+  }
+  p { max-width: var(--measure); }
+  a { color: var(--accent); }
+  strong { font-weight: 640; }
+
+  /* ---- Letterhead ---------------------------------------------------- */
+  .head { display: flex; flex-direction: column; gap: 1.5rem; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: .7rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(1.9rem, 5.6vw, 2.9rem);
+    line-height: 1.14;
+    letter-spacing: -.015em;
+    text-wrap: balance;
+    max-width: 20ch;
+  }
+  .parties {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 1.25rem 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--hair);
+  }
+  .party dt {
+    font-family: var(--mono);
+    font-size: .66rem;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: .3rem;
+  }
+  .party dd { font-size: .93rem; line-height: 1.5; }
+
+  /* ---- Sections ------------------------------------------------------ */
+  section { display: flex; flex-direction: column; gap: 1rem; }
+  h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 1.45rem;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+    padding-bottom: .7rem;
+    border-bottom: 1px solid var(--hair);
+  }
+  h3 {
+    font-size: .95rem;
+    font-weight: 640;
+    margin-top: .5rem;
+  }
+
+  /* ---- The claim ----------------------------------------------------- */
+  .claim {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.15rem 1.35rem;
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-left: 3px solid var(--ok);
+    border-radius: 3px;
+  }
+  .claim .mark { color: var(--ok); font-size: 1.1rem; line-height: 1.5; flex: none; }
+  .claim p { margin: 0; font-size: .97rem; }
+
+  /* ---- Steps --------------------------------------------------------- */
+  ol.steps { list-style: none; display: flex; flex-direction: column; gap: .9rem; }
+  ol.steps li {
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
+    gap: .85rem;
+    align-items: baseline;
+    max-width: var(--measure);
+  }
+  ol.steps .n {
+    font-family: var(--mono);
+    font-size: .78rem;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  ul.plain { list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+  ul.plain li {
+    max-width: var(--measure);
+    padding-left: 1.05rem;
+    position: relative;
+  }
+  ul.plain li::before {
+    content: "";
+    position: absolute; left: 0; top: .72em;
+    width: .32rem; height: .32rem;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  /* ---- The card object ----------------------------------------------- */
+  .card-figure { display: flex; flex-direction: column; gap: .7rem; align-items: flex-start; }
+  .card {
+    width: 15.5rem;
+    background: linear-gradient(158deg, var(--card) 0%, var(--card-2) 100%);
+    color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 26px -12px rgba(0,0,0,.5);
+  }
+  .card .top { padding: 1.05rem 1.15rem 0; font-weight: 700; font-size: 1.02rem; letter-spacing: -.02em; }
+  .card .words {
+    padding: .85rem 1.15rem 0;
+    font-size: 1.16rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: .94;
+    letter-spacing: -.01em;
+  }
+  .card .words i { display: block; font-weight: 300; font-style: italic; }
+  .card .words b { display: block; font-weight: 700; }
+  .card .fields {
+    display: flex; justify-content: space-between; gap: 1rem;
+    padding: 1.1rem 1.15rem .95rem;
+    font-size: .72rem;
+  }
+  .card .fields span { display: block; text-transform: uppercase; letter-spacing: .06em; opacity: .88; }
+  .card .fields b { font-size: .92rem; font-weight: 500; letter-spacing: -.01em; }
+  .card .code { background: #fff; padding: .7rem 1.15rem; display: flex; gap: 1.5px; height: 2.6rem; align-items: flex-end; }
+  .card .code i { flex: 1; background: #111; display: block; }
+  figcaption { font-size: .8rem; color: var(--ink-soft); max-width: 22rem; }
+
+  /* ---- Table --------------------------------------------------------- */
+  .scroll { overflow-x: auto; border: 1px solid var(--hair); border-radius: 4px; background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 30rem; font-size: .9rem; }
+  th, td { text-align: left; padding: .85rem 1rem; border-bottom: 1px solid var(--hair-2); vertical-align: top; }
+  thead th {
+    font-family: var(--mono);
+    font-size: .64rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 400;
+    background: var(--hair-2);
+  }
+  tbody tr:last-child td { border-bottom: 0; }
+  td.price { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; font-size: .87rem; }
+  .pick { background: var(--accent-w); }
+  .pick td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+  .tag {
+    display: inline-block; margin-left: .45rem;
+    font-family: var(--mono); font-size: .58rem; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid currentColor; border-radius: 2px; padding: .1rem .3rem;
+    vertical-align: middle;
+  }
+
+  /* ---- Ask ----------------------------------------------------------- */
+  .ask {
+    background: var(--surface);
+    border: 1px solid var(--hair);
+    border-radius: 4px;
+    padding: 1.5rem;
+    display: flex; flex-direction: column; gap: .9rem;
+  }
+  .ask h2 { border: 0; padding: 0; }
+  .contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem 1.5rem; }
+  .contact dt { font-family: var(--mono); font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: .2rem; }
+  .contact dd { font-size: .93rem; }
+
+  /* fields the sender still has to fill in */
+  .todo {
+    border-bottom: 1.5px dashed var(--accent);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: .82rem;
+  }
+
+  /* ---- Language switch ----------------------------------------------- */
+  .langbar { display: flex; gap: .3rem; }
+  .langbar button {
+    font-family: var(--mono);
+    font-size: .68rem; letter-spacing: .1em; text-transform: uppercase;
+    padding: .35rem .7rem;
+    background: transparent; color: var(--ink-soft);
+    border: 1px solid var(--hair); border-radius: 2px;
+    cursor: pointer;
+  }
+  .langbar button[aria-pressed="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .langbar button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  [data-lang] { display: none; }
+  [data-lang].on { display: flex; flex-direction: column; gap: 3.25rem; }
+
+  footer {
+    border-top: 1px solid var(--hair);
+    padding-top: 1.25rem;
+    font-size: .78rem;
+    color: var(--ink-soft);
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="langbar">
+    <button type="button" data-set="ca" aria-pressed="true">Català</button>
+    <button type="button" data-set="es" aria-pressed="false">Castellano</button>
+  </div>
+
+  <!-- ================= CATALÀ ================= -->
+  <div data-lang="ca" class="on" lang="ca">
+
+    <header class="head">
+      <div class="eyebrow">Proposta comercial · Agost de 2026</div>
+      <h1>La targeta de fidelitat, al moneder del mòbil</h1>
+      <dl class="parties">
+        <div class="party">
+          <dt>Per a</dt>
+          <dd>Activitats Comercials Andorranes, S.A.U.<br>Av. Meritxell 93 · AD500 Andorra la Vella</dd>
+        </div>
+        <div class="party">
+          <dt>De</dt>
+          <dd><span class="todo">[el teu nom]</span><br><span class="todo">[telèfon]</span> · rmadolell@gmail.com</dd>
+        </div>
+      </dl>
+    </header>
+
+    <section>
+      <p>Els vostres clients porten la targeta de fidelitat de plàstic a la cartera. Aquesta proposta la posa al moneder del mòbil —Apple Wallet i Google Wallet— en menys d'un minut, sense instal·lar cap aplicació i sense passar pel taulell.</p>
+      <p>No és una idea sobre paper. Està construït, desplegat i funcionant.</p>
+      <div class="claim">
+        <span class="mark" aria-hidden="true">✓</span>
+        <p><strong>El pase generat ja s'ha escanejat correctament en una de les vostres caixes.</strong> El TPV el llegeix com llegeix la targeta de plàstic. Era l'única incògnita real i està resolta.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Com ho fa el client</h2>
+      <ol class="steps">
+        <li><span class="n">01</span><span>Obre una pàgina web i enfoca el codi de barres de la seva targeta.</span></li>
+        <li><span class="n">02</span><span>Escriu el seu nom.</span></li>
+        <li><span class="n">03</span><span>Toca «Afegir a Apple Wallet». Ja la té.</span></li>
+      </ol>
+      <p>La foto de la targeta no surt mai del telèfon: el codi es llegeix dins del navegador. No es desa cap nom ni cap número enlloc. El servidor és un intermediari sense memòria.</p>
+
+      <figure class="card-figure">
+        <div class="card" role="img" aria-label="Vista de la targeta al moneder del mòbil">
+          <div class="top">E.Leclerc</div>
+          <div class="words" aria-hidden="true">Qualitat<i>Innovació</i><b>Preu baix</b></div>
+          <div class="fields">
+            <div><span>Nom</span><b>Anna Riba</b></div>
+            <div style="text-align:right"><span>Número</span><b>2953499220191</b></div>
+          </div>
+          <div class="code" aria-hidden="true">
+            <i style="height:70%"></i><i style="height:95%"></i><i style="height:55%"></i><i style="height:88%"></i><i style="height:62%"></i><i style="height:100%"></i><i style="height:48%"></i><i style="height:80%"></i><i style="height:66%"></i><i style="height:92%"></i><i style="height:58%"></i><i style="height:75%"></i><i style="height:98%"></i><i style="height:52%"></i><i style="height:84%"></i><i style="height:68%"></i><i style="height:90%"></i><i style="height:60%"></i><i style="height:78%"></i><i style="height:96%"></i><i style="height:50%"></i><i style="height:86%"></i><i style="height:64%"></i><i style="height:94%"></i>
+          </div>
+        </div>
+        <figcaption>El número surt també en text, perquè a les caixes sense lector el puguin teclejar.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Per què val més que digitalitzar un tros de plàstic</h2>
+      <p>La targeta al moneder no és el producte. El producte és el canal que obre.</p>
+      <ul class="plain">
+        <li><strong>Notificacions a la pantalla de bloqueig</strong>, sense aplicació, sense App Store i sense que ningú s'hagi d'instal·lar res.</li>
+        <li><strong>Fins a deu geovalles.</strong> La targeta apareix sola al mòbil quan el client s'acosta a l'Hiper Andorra, a la Massana, a Sant Julià o a Escaldes.</li>
+        <li><strong>El pase s'actualitza a distància.</strong> El saldo de Tickets E.Leclerc pot viure a la targeta i canviar sol.</li>
+        <li><strong>Zero fricció.</strong> Cap descàrrega, cap contrasenya, cap registre nou: la targeta que ja tenen.</li>
+      </ul>
+      <p>Aquesta part encara no està construïda. És exactament el que proposo fer a la fase següent.</p>
+    </section>
+
+    <section>
+      <h2>Què hi ha fet avui</h2>
+      <ul class="plain">
+        <li>Funciona a iPhone i a Android, amb càmera, foto o número escrit a mà.</li>
+        <li>Quatre idiomes: català, castellà, francès i anglès.</li>
+        <li>Cap dada personal desada, enlloc.</li>
+        <li>Verificat en caixa el 7 d'agost de 2026.</li>
+      </ul>
+      <h3>Una cosa que us vull dir abans que la trobeu vosaltres</h3>
+      <p>La signatura criptogràfica dels pases d'Apple la fa avui un proveïdor extern. Això permet tenir-ho funcionant ja, però vol dir que el certificat no és vostre. A la fase següent es migraria al vostre propi compte d'Apple Developer, i els pases passarien a ser vostres del tot. Ho poso per endavant perquè és el primer que preguntaria jo.</p>
+    </section>
+
+    <section>
+      <h2>Modalitats</h2>
+      <p>Tres formes d'entrar-hi. La primera és la que recomano, perquè és la que us costa menys de provar.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Modalitat</th><th>Què inclou</th><th>Import</th></tr>
+          </thead>
+          <tbody>
+            <tr class="pick">
+              <td><strong>Pilot</strong><span class="tag">Recomanat</span></td>
+              <td>90 dies en un sol centre, amb mètriques acordades: targetes emeses i lectures correctes en caixa. Si no arriba als números, no continuem.</td>
+              <td class="price">1.900 €</td>
+            </tr>
+            <tr>
+              <td><strong>Llicència</strong></td>
+              <td>Posada en marxa als quatre centres, allotjament, manteniment, actualitzacions i suport. Inclou el cost del proveïdor de pases.</td>
+              <td class="price">3.200 €<br>+ 340 €/mes</td>
+            </tr>
+            <tr>
+              <td><strong>Compra</strong></td>
+              <td>Lliurament del codi font, la marca aplicada i el desplegament, amb tres mesos de suport. A partir d'aquí és vostre i no depeneu de mi.</td>
+              <td class="price">8.500 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Preus sense IGI. Les geovalles i les notificacions a la pantalla de bloqueig es pressuposten a part, un cop decidit l'abast.</p>
+    </section>
+
+    <section>
+      <h2>Sobre la vostra marca</h2>
+      <p>La demostració fa servir el vostre nom, el vostre logotip i els vostres colors. L'he feta com a client vostre i només per ensenyar la idea: no està promocionada ni indexada, i no hi ha cap dada de ningú. És vostra per autoritzar-la, per demanar-hi canvis o per demanar que la retiri. Amb un missatge n'hi ha prou i la baixo el mateix dia.</p>
+    </section>
+
+    <div class="ask">
+      <h2>El que us demano</h2>
+      <p>Quinze minuts. Us ensenyo la targeta funcionant al meu telèfon i la passem per una caixa perquè ho vegeu vosaltres mateixos.</p>
+      <dl class="contact">
+        <div><dt>Nom</dt><dd><span class="todo">[el teu nom]</span></dd></div>
+        <div><dt>Telèfon</dt><dd><span class="todo">[telèfon]</span></dd></div>
+        <div><dt>Correu</dt><dd>rmadolell@gmail.com</dd></div>
+        <div><dt>Demostració</dt><dd><a href="https://leclerc-fidelity-card.vercel.app/ca">leclerc-fidelity-card.vercel.app</a></dd></div>
+      </dl>
+    </div>
+
+    <footer>Proposta sense compromís i sense cost. Vàlida fins al 30 de setembre de 2026.</footer>
+  </div>
+
+  <!-- ================= CASTELLANO ================= -->
+  <div data-lang="es" lang="es">
+
+    <header class="head">
+      <div class="eyebrow">Propuesta comercial · Agosto de 2026</div>
+      <h1>La tarjeta de fidelización, en el monedero del móvil</h1>
+      <dl class="parties">
+        <div class="party">
+          <dt>Para</dt>
+          <dd>Activitats Comercials Andorranes, S.A.U.<br>Av. Meritxell 93 · AD500 Andorra la Vella</dd>
+        </div>
+        <div class="party">
+          <dt>De</dt>
+          <dd><span class="todo">[tu nombre]</span><br><span class="todo">[teléfono]</span> · rmadolell@gmail.com</dd>
+        </div>
+      </dl>
+    </header>
+
+    <section>
+      <p>Sus clientes llevan la tarjeta de fidelización de plástico en la cartera. Esta propuesta la pone en el monedero del móvil —Apple Wallet y Google Wallet— en menos de un minuto, sin instalar ninguna aplicación y sin pasar por el mostrador.</p>
+      <p>No es una idea sobre papel. Está construido, desplegado y funcionando.</p>
+      <div class="claim">
+        <span class="mark" aria-hidden="true">✓</span>
+        <p><strong>El pase generado ya se ha escaneado correctamente en una de sus cajas.</strong> El TPV lo lee igual que lee la tarjeta de plástico. Era la única incógnita real y está resuelta.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Cómo lo hace el cliente</h2>
+      <ol class="steps">
+        <li><span class="n">01</span><span>Abre una página web y enfoca el código de barras de su tarjeta.</span></li>
+        <li><span class="n">02</span><span>Escribe su nombre.</span></li>
+        <li><span class="n">03</span><span>Toca «Añadir a Apple Wallet». Ya la tiene.</span></li>
+      </ol>
+      <p>La foto de la tarjeta no sale nunca del teléfono: el código se lee dentro del navegador. No se guarda ningún nombre ni ningún número en ningún sitio. El servidor es un intermediario sin memoria.</p>
+
+      <figure class="card-figure">
+        <div class="card" role="img" aria-label="Vista de la tarjeta en el monedero del móvil">
+          <div class="top">E.Leclerc</div>
+          <div class="words" aria-hidden="true">Qualitat<i>Innovació</i><b>Preu baix</b></div>
+          <div class="fields">
+            <div><span>Nom</span><b>Anna Riba</b></div>
+            <div style="text-align:right"><span>Número</span><b>2953499220191</b></div>
+          </div>
+          <div class="code" aria-hidden="true">
+            <i style="height:70%"></i><i style="height:95%"></i><i style="height:55%"></i><i style="height:88%"></i><i style="height:62%"></i><i style="height:100%"></i><i style="height:48%"></i><i style="height:80%"></i><i style="height:66%"></i><i style="height:92%"></i><i style="height:58%"></i><i style="height:75%"></i><i style="height:98%"></i><i style="height:52%"></i><i style="height:84%"></i><i style="height:68%"></i><i style="height:90%"></i><i style="height:60%"></i><i style="height:78%"></i><i style="height:96%"></i><i style="height:50%"></i><i style="height:86%"></i><i style="height:64%"></i><i style="height:94%"></i>
+          </div>
+        </div>
+        <figcaption>El número aparece también en texto, para que en las cajas sin lector puedan teclearlo.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Por qué vale más que digitalizar un trozo de plástico</h2>
+      <p>La tarjeta en el monedero no es el producto. El producto es el canal que abre.</p>
+      <ul class="plain">
+        <li><strong>Notificaciones en la pantalla de bloqueo</strong>, sin aplicación, sin App Store y sin que nadie tenga que instalarse nada.</li>
+        <li><strong>Hasta diez geovallas.</strong> La tarjeta aparece sola en el móvil cuando el cliente se acerca al Hiper Andorra, a la Massana, a Sant Julià o a Escaldes.</li>
+        <li><strong>El pase se actualiza a distancia.</strong> El saldo de Tickets E.Leclerc puede vivir en la tarjeta y cambiar solo.</li>
+        <li><strong>Cero fricción.</strong> Ninguna descarga, ninguna contraseña, ningún registro nuevo: la tarjeta que ya tienen.</li>
+      </ul>
+      <p>Esta parte todavía no está construida. Es exactamente lo que propongo hacer en la fase siguiente.</p>
+    </section>
+
+    <section>
+      <h2>Qué hay hecho hoy</h2>
+      <ul class="plain">
+        <li>Funciona en iPhone y en Android, con cámara, foto o número escrito a mano.</li>
+        <li>Cuatro idiomas: catalán, castellano, francés e inglés.</li>
+        <li>Ningún dato personal guardado, en ningún sitio.</li>
+        <li>Verificado en caja el 7 de agosto de 2026.</li>
+      </ul>
+      <h3>Algo que les quiero decir antes de que lo encuentren ustedes</h3>
+      <p>La firma criptográfica de los pases de Apple la hace hoy un proveedor externo. Eso permite tenerlo funcionando ya, pero significa que el certificado no es suyo. En la fase siguiente se migraría a su propia cuenta de Apple Developer, y los pases pasarían a ser suyos del todo. Lo pongo por delante porque es lo primero que preguntaría yo.</p>
+    </section>
+
+    <section>
+      <h2>Modalidades</h2>
+      <p>Tres formas de entrar. La primera es la que recomiendo, porque es la que menos les cuesta probar.</p>
+      <div class="scroll">
+        <table>
+          <thead>
+            <tr><th>Modalidad</th><th>Qué incluye</th><th>Importe</th></tr>
+          </thead>
+          <tbody>
+            <tr class="pick">
+              <td><strong>Piloto</strong><span class="tag">Recomendado</span></td>
+              <td>90 días en un solo centro, con métricas acordadas: tarjetas emitidas y lecturas correctas en caja. Si no llega a los números, no continuamos.</td>
+              <td class="price">1.900 €</td>
+            </tr>
+            <tr>
+              <td><strong>Licencia</strong></td>
+              <td>Puesta en marcha en los cuatro centros, alojamiento, mantenimiento, actualizaciones y soporte. Incluye el coste del proveedor de pases.</td>
+              <td class="price">3.200 €<br>+ 340 €/mes</td>
+            </tr>
+            <tr>
+              <td><strong>Compra</strong></td>
+              <td>Entrega del código fuente, la marca aplicada y el despliegue, con tres meses de soporte. A partir de ahí es suyo y no dependen de mí.</td>
+              <td class="price">8.500 €</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Precios sin IGI. Las geovallas y las notificaciones en la pantalla de bloqueo se presupuestan aparte, una vez decidido el alcance.</p>
+    </section>
+
+    <section>
+      <h2>Sobre su marca</h2>
+      <p>La demostración usa su nombre, su logotipo y sus colores. La he hecho como cliente suyo y solo para enseñar la idea: no está promocionada ni indexada, y no hay ningún dato de nadie. Es suya para autorizarla, para pedir cambios o para pedir que la retire. Con un mensaje basta y la bajo el mismo día.</p>
+    </section>
+
+    <div class="ask">
+      <h2>Lo que les pido</h2>
+      <p>Quince minutos. Les enseño la tarjeta funcionando en mi teléfono y la pasamos por una caja para que lo vean ustedes mismos.</p>
+      <dl class="contact">
+        <div><dt>Nombre</dt><dd><span class="todo">[tu nombre]</span></dd></div>
+        <div><dt>Teléfono</dt><dd><span class="todo">[teléfono]</span></dd></div>
+        <div><dt>Correo</dt><dd>rmadolell@gmail.com</dd></div>
+        <div><dt>Demostración</dt><dd><a href="https://leclerc-fidelity-card.vercel.app/es">leclerc-fidelity-card.vercel.app</a></dd></div>
+      </dl>
+    </div>
+
+    <footer>Propuesta sin compromiso y sin coste. Válida hasta el 30 de septiembre de 2026.</footer>
+  </div>
+</div>
+
+<script>
+  const botons = document.querySelectorAll(".langbar button");
+  const blocs = document.querySelectorAll("[data-lang]");
+  botons.forEach((b) => {
+    b.addEventListener("click", () => {
+      const tria = b.dataset.set;
+      botons.forEach((o) => o.setAttribute("aria-pressed", String(o.dataset.set === tria)));
+      blocs.forEach((bl) => bl.classList.toggle("on", bl.dataset.lang === tria));
+      document.documentElement.lang = tria;
+    });
+  });
+</script>
