@@ -58,11 +58,13 @@ La mayoría de lectores de caja devuelven la misma cadena de dígitos con ambas
 simbologías, pero no todos: algunos TPV están configurados para aceptar solo
 EAN.
 
-**Este riesgo no se cierra desde el código.** Estado: se ha generado el pase de
-prueba `PROVA-CAIXA.pkpass` (número real, Code128) y está pendiente de
-escanearse en una caja. Si el TPV lo rechaza, ninguna app lo arregla: habría
-que cambiar de proveedor de pases y, aun así, iOS seguiría sin poder mostrar
-EAN-13.
+**RIESGO CERRADO el 2026-08-07.** El pase de prueba `PROVA-CAIXA.pkpass`
+(número real, reemitido como Code128) se ha escaneado en una caja de
+E. Leclerc Andorra y **el TPV lo acepta**. La reemisión EAN-13 → Code128 no
+rompe la lectura en caja.
+
+Era el único riesgo que podía invalidar el proyecto entero, y no se podía
+cerrar desde el código: dependía del TPV. Ya no está abierto.
 
 ## Fiabilidad del escaneo
 
@@ -185,7 +187,8 @@ Ningún error deja al usuario sin salida.
   502 con mensaje útil; éxito → solo los campos esperados.
 - **Manual**, antes de publicar: escaneo real en iPhone y en Android, añadir a
   ambos monederos, y **escanear el pase resultante en una caja de E. Leclerc**
-  para cerrar el riesgo de la simbología.
+  para cerrar el riesgo de la simbología. Hecho el 2026-08-07: el TPV acepta
+  el Code128.
 
 ## Identidad visual
 
