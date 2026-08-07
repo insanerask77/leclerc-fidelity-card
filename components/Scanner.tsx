@@ -269,11 +269,14 @@ export default function Scanner({ dict, onDetected }: Props) {
         </button>
       </div>
 
+      {/* Sin `capture`: iOS y Android abren una hoja nativa con camara Y
+          galeria. Con `capture="environment"` se fuerza la camara y se pierde
+          el acceso a fotos ya hechas, que es justo el caso de quien ya tenia
+          fotografiada la tarjeta o se la mandaron. */}
       <input
         ref={fileRef}
         type="file"
         accept="image/*"
-        capture="environment"
         className="hidden"
         onChange={(e) => {
           const f = e.target.files?.[0];
