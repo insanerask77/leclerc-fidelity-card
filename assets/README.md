@@ -33,3 +33,21 @@ file assets/*.png     # comprueba dimensiones
 ls -l assets/*.png    # entre 5 y 30 KB cada uno es lo razonable
 npm test              # lib/pass-payload.test.ts debe seguir en verde
 ```
+
+## Nota sobre qué fichero es cuál
+
+Los originales venían con los roles intercambiados: `originales/logo.png` es el
+**icono redondo** de la "L" y `originales/icon.png` es el **wordmark**
+horizontal "E.Leclerc" rodeado de mucho blanco.
+
+En un pase de Apple Wallet esos dos roles son distintos:
+
+- `iconURL` → cuadrado pequeño, aparece en notificaciones y pantalla de bloqueo.
+  Se dibuja a 29 pt. Aquí va el **icono redondo**.
+- `logoURL` → la marca de la cabecera del pase, máximo 160×50 pt. Aquí va el
+  **wordmark**.
+
+Tal como venían, el wordmark habría acabado en el cuadradito de 29 pt, donde el
+texto queda ilegible. Están recolocados: `logo.png` es el wordmark recortado a
+su contenido real (480×150) y `icon.png` es el icono redondo (120×120). Ambos
+cuantizados a paleta, porque son colores planos.
