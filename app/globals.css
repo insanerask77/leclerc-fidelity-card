@@ -1,6 +1,19 @@
 @import "tailwindcss";
 
+/*
+ * Paleta tomada de la tarjeta fisica de E. Leclerc Andorra.
+ *
+ * El naranja sobre blanco da 3.03:1. Eso cumple WCAG AA solo para texto grande
+ * (>=24px, o >=18.66px en negrita), asi que el naranja se usa como superficie
+ * de marca con tipografia de display, nunca debajo de texto pequeno.
+ * Para eso esta el azul: 5.53:1 con blanco, valido a cualquier tamano.
+ */
 :root {
+  --leclerc-orange: #e5760b;
+  --leclerc-orange-dark: #c4640a;
+  --leclerc-blue: #0f6cb1;
+  --leclerc-blue-dark: #0c5a94;
+
   --background: #ffffff;
   --foreground: #171717;
 }
@@ -8,19 +21,31 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-leclerc-orange: var(--leclerc-orange);
+  --color-leclerc-orange-dark: var(--leclerc-orange-dark);
+  --color-leclerc-blue: var(--leclerc-blue);
+  --color-leclerc-blue-dark: var(--leclerc-blue-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/*
+ * Sin tema oscuro: la identidad es naranja y blanco, y una inversion
+ * automatica la rompe. El create-next-app traia un bloque que ponia el fondo
+ * casi negro; se ha quitado a proposito.
+ */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/*
+ * Bloque tipografico de la tarjeta: palabras en blanco, muy juntas, con pesos
+ * y estilos alternos. Es puramente decorativo.
+ */
+.marca-palabras {
+  line-height: 0.92;
+  letter-spacing: -0.01em;
 }

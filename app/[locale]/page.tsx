@@ -13,26 +13,45 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const dict = getDictionary(locale);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-md flex-col gap-8 px-5 py-8">
-      <header className="flex items-baseline justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-[#1e40af]">E.Leclerc</h1>
-          <p className="text-sm text-zinc-500">{dict.ui.tagline}</p>
+    <div className="min-h-dvh">
+      {/* Franja de marca: naranja con tipografia de display, como la tarjeta
+          fisica. El blanco sobre naranja da 3.03:1, valido solo a este tamano. */}
+      <header className="bg-leclerc-orange px-5 pb-6 pt-7 text-white">
+        <div className="mx-auto max-w-md">
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-2xl font-bold tracking-tight">
+              E.Leclerc<span className="ml-1 font-normal opacity-80">Andorra</span>
+            </h1>
+            <nav className="flex gap-2 pt-1 text-xs font-semibold uppercase">
+              {LOCALES.map((l) => (
+                <Link
+                  key={l}
+                  href={`/${l}`}
+                  aria-current={l === locale ? 'page' : undefined}
+                  className={
+                    l === locale
+                      ? 'rounded bg-white px-1.5 py-0.5 text-leclerc-orange-dark'
+                      : 'px-1.5 py-0.5 text-white/80 hover:text-white'
+                  }
+                >
+                  {l}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          <p className="marca-palabras mt-5 text-3xl font-extrabold uppercase">
+            Fidelitat
+            <span className="block text-2xl font-light italic normal-case tracking-normal opacity-90">
+              {dict.ui.tagline}
+            </span>
+          </p>
         </div>
-        <nav className="flex gap-2 text-xs uppercase">
-          {LOCALES.map((l) => (
-            <Link
-              key={l}
-              href={`/${l}`}
-              className={l === locale ? 'font-bold text-[#1e40af]' : 'text-zinc-400'}
-            >
-              {l}
-            </Link>
-          ))}
-        </nav>
       </header>
 
-      <CardWizard dict={dict} locale={locale} />
-    </main>
+      <main className="mx-auto flex max-w-md flex-col gap-8 px-5 pb-10 pt-7">
+        <CardWizard dict={dict} locale={locale} />
+      </main>
+    </div>
   );
 }

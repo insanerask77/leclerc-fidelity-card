@@ -7,8 +7,8 @@ import path from 'node:path';
  * código fuente: así el diff se mantiene legible y el fichero no engorda.
  */
 
-export const BRAND_COLOR = '#1e40af';
-export const COLOR_PRESET = 'blue';
+export const BRAND_COLOR = '#e5760b';
+export const COLOR_PRESET = 'orange';
 export const ORG_NAME = 'E. Leclerc Andorra';
 export const LOGO_TEXT = 'E.Leclerc';
 

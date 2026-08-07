@@ -192,7 +192,7 @@ export default function Scanner({ dict, onDetected }: Props) {
         <p className="font-mono text-2xl tracking-widest">{pendiente.value}</p>
         <div className="flex gap-3">
           <button
-            className="flex-1 rounded-xl bg-[#1e40af] px-4 py-4 text-white"
+            className="flex-1 rounded-xl bg-leclerc-blue px-4 py-4 text-white"
             onClick={() => onDetected(pendiente)}
           >
             {dict.ui.confirmYes}
@@ -245,7 +245,7 @@ export default function Scanner({ dict, onDetected }: Props) {
             onChange={(e) => setManual(e.target.value)}
           />
           <p className="text-sm text-zinc-500">{dict.ui.manualHint}</p>
-          <button className="w-full rounded-xl bg-[#1e40af] px-4 py-4 text-white" type="submit">
+          <button className="w-full rounded-xl bg-leclerc-blue px-4 py-4 text-white" type="submit">
             {dict.ui.continue}
           </button>
         </form>
