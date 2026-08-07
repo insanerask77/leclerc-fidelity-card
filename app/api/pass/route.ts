@@ -5,6 +5,7 @@ import { buildPassPayload } from '@/lib/pass-payload';
 
 const UPSTREAM = 'https://api.walletwallet.dev/api/passes';
 const MAX_BODY = 4_096;
+const UPSTREAM_TIMEOUT_MS = 15_000;
 
 const Entrada = z.object({
   name: z.string().trim().min(1).max(100),
@@ -23,6 +24,11 @@ export async function POST(request: Request): Promise<Response> {
     console.error('WALLETWALLET_API_KEY no está configurada');
     return Response.json({ error: 'not_configured' }, { status: 500 });
   }
+
+  // Rechaza antes de bufferizar. La cabecera puede faltar o mentir, por eso
+  // se mantiene la comprobacion sobre el texto ya leido mas abajo.
+  const declarado = Number(request.headers.get('content-length') ?? 0);
+  if (declarado > MAX_BODY) return malaEntrada('body_too_large');
 
   const raw = await request.text();
   if (raw.length > MAX_BODY) return malaEntrada('body_too_large');
@@ -58,6 +64,9 @@ export async function POST(request: Request): Promise<Response> {
         authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify(payload),
+      // Si el tercero se cuelga, preferimos un 502 claro a que el usuario
+      // espere hasta que la plataforma mate la funcion.
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
   } catch {
     // Nunca volcamos el cuerpo: lleva el nombre y el número de tarjeta.
@@ -70,23 +79,29 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: 'upstream_failed' }, { status: 502 });
   }
 
-  const data = (await upstream.json()) as {
-    applePass?: string;
-    googleSaveUrl?: string;
-    shareUrl?: string;
-  };
-
-  if (!data.applePass || !data.googleSaveUrl) {
-    console.error('walletwallet: respuesta incompleta');
+  let data: unknown;
+  try {
+    data = await upstream.json();
+  } catch {
+    // 200 con HTML (WAF, mantenimiento) o cuerpo vacio.
+    console.error('walletwallet: respuesta no es JSON');
     return Response.json({ error: 'upstream_failed' }, { status: 502 });
   }
 
-  // Solo lo que el cliente necesita. serialNumber no sale de aquí.
+  const esCadena = (v: unknown): v is string => typeof v === 'string' && v.length > 0;
+  const d = data as Record<string, unknown>;
+
+  if (!esCadena(d.applePass) || !esCadena(d.googleSaveUrl)) {
+    console.error('walletwallet: respuesta incompleta o con tipos inesperados');
+    return Response.json({ error: 'upstream_failed' }, { status: 502 });
+  }
+
+  // Solo lo que el cliente necesita. serialNumber no sale de aqui.
   return Response.json(
     {
-      applePass: data.applePass,
-      googleSaveUrl: data.googleSaveUrl,
-      shareUrl: data.shareUrl ?? '',
+      applePass: d.applePass,
+      googleSaveUrl: d.googleSaveUrl,
+      shareUrl: esCadena(d.shareUrl) ? d.shareUrl : '',
     },
     { headers: { 'cache-control': 'no-store' } },
   );

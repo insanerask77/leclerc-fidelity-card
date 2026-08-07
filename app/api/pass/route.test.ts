@@ -108,4 +108,54 @@ describe('POST /api/pass', () => {
     expect(res.status).toBe(500);
     expect((await res.json()).error).toBe('not_configured');
   });
+
+  it('devuelve 502 si la API responde 200 con HTML en vez de JSON', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () =>
+      new Response('<html>WAF</html>', { status: 200, headers: { 'content-type': 'text/html' } }),
+    ));
+    const res = await POST(peticion(VALIDO));
+    expect(res.status).toBe(502);
+    expect((await res.json()).error).toBe('upstream_failed');
+  });
+
+  it('devuelve 502 si la API responde 200 con el cuerpo vacio', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 200 })));
+    expect((await POST(peticion(VALIDO))).status).toBe(502);
+  });
+
+  it('devuelve 502 si applePass no es una cadena', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () =>
+      Response.json({ applePass: 12345, googleSaveUrl: 'https://x', shareUrl: 'https://y' }),
+    ));
+    expect((await POST(peticion(VALIDO))).status).toBe(502);
+  });
+
+  it('devuelve 502 si la API tarda demasiado', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () => {
+      const e = new Error('The operation was aborted due to timeout');
+      e.name = 'TimeoutError';
+      throw e;
+    }));
+    expect((await POST(peticion(VALIDO))).status).toBe(502);
+  });
+
+  it('rechaza por content-length antes de leer el cuerpo', async () => {
+    const res = await POST(
+      new Request('http://localhost/api/pass', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'content-length': '999999' },
+        body: JSON.stringify(VALIDO),
+      }),
+    );
+    expect(res.status).toBe(400);
+  });
+
+  it('tolera que shareUrl venga ausente', async () => {
+    vi.stubGlobal('fetch', vi.fn(async () =>
+      Response.json({ applePass: 'UEsDBBQ', googleSaveUrl: 'https://x' }),
+    ));
+    const res = await POST(peticion(VALIDO));
+    expect(res.status).toBe(200);
+    expect((await res.json()).shareUrl).toBe('');
+  });
 });
